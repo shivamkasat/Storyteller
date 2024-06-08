@@ -1,0 +1,46 @@
+version: '3.7'
+services:
+  springboot-app:
+    build:
+      context: ../  # This points to the parent directory where the Dockerfile is located
+      dockerfile: Dockerfile  # Assuming the Dockerfile is named 'Dockerfile'
+    ports:
+      - "8084:8084"
+    depends_on:
+      - minio
+      - mysql
+  minio:
+    image: quay.io/minio/minio
+    volumes:
+      - minio_data:/data
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    command: server /data --console-address ":9001"
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:9000/minio/health/live" ]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+
+  mysql:
+   image: mysql
+   volumes:
+     - mysql_data:/var/lib/mysql
+     - ./initdb:/docker-entrypoint-initdb.d # Mount custom init scripts
+   ports:
+     - "3309:3306"
+   environment:
+     MYSQL_ROOT_PASSWORD: rootpassword
+   healthcheck:
+     test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+     interval: 30s
+     timeout: 10s
+     retries: 5
+
+volumes:
+  minio_data:
+  mysql_data:
