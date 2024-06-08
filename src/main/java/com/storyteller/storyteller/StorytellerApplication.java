@@ -25,7 +25,7 @@ public class StorytellerApplication {
 	@Bean
 	public CommandLineRunner commandLineRunner(AppDao appDao) {
 		return runner -> {
-			createUser(appDao);
+//			createUser(appDao);
 //			findAuthorById(appDao);
 //			createStory(appDao);
 
