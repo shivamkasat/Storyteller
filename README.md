@@ -1,5 +1,5 @@
 # Storyteller
 
 ## Steps to start application
-cd docker
+cd docker \
 docker-compose up
